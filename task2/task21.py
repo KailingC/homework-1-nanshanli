@@ -12,7 +12,9 @@ www.tylervigen.com/spurious-correlations
 import matplotlib.pyplot as plt
 import matplotlib.dates as dates
 import pandas as pd
+import numpy as np
 from bs4 import BeautifulSoup
+from scipy.interpolate import spline
 
 
 def getNicholasCageMovies():
@@ -43,7 +45,8 @@ def getJoinedDataFrame():
     """Extract data and obtain DataFrame for plotting."""
     # initialize movie df
     moviedata = getNicholasCageMovies()
-    moviedf = pd.DataFrame(moviedata.items(), columns=['Year', 'Movie Count'])
+    moviedf = pd.DataFrame(moviedata.items(),
+                           columns=['Year', 'Movie Count'])
     moviedf['Year'] = pd.to_numeric(moviedf['Year'])
     moviedf = moviedf.set_index('Year')
 
@@ -63,31 +66,43 @@ def main():
     """Define main function."""
     df = getJoinedDataFrame()
 
-    # generate plot
-    df.index = pd.to_datetime(df.index, format='%Y')
-    plt.figure()
-    plt.suptitle('Number of people who drowned by falling into a pool',
-                 fontsize=12)
-    plt.title('correlates with Films Nicolas Cage appeared in', fontsize=10)
-    ax1 = plt.gca()
-    line1, = ax1.plot(df.index.values, df['Deaths'], 'ko-')
-    ax1.xaxis.set_major_locator(dates.YearLocator(1))
-    ax1.xaxis.set_minor_locator(dates.YearLocator(1, month=7, day=2))
-    ax1.xaxis.set_major_formatter(dates.DateFormatter('%Y'))
-    plt.tick_params(
-        axis='x',
-        which='major',
-        bottom=False,
-        labelbottom=True
-    )
-    ax1.set_ylabel('Swimming pool drownings')
-    ax2 = ax1.twinx()
-    line2, = ax2.plot(df.index.values, df['Movie Count'], '-ro')
-    ax2.set_ylabel('NicholasCage')
-    ax2.legend((line1, line2), ('Swimming pool drownings', 'Nicholas Cage'))
-    plt.show()
+    xnew = np.linspace(1999, 2009, 200)
+    splineDeaths = spline(df.index.values, df.Deaths.values, xnew)
+    splineMovies = spline(df.index.values, df['Movie Count'].values, xnew)
 
+    # generate plot
+    plt.figure(figsize=(15, 4))
+
+    plt.title('Number of people who drowned by falling into a pool\n'
+              'correlates with\nFilms Nicolas Cage appeared in\n'
+              'Correlation: 66.6% (r=0.666004)',
+              fontsize=12)
+
+    ax1 = plt.gca()
+    ax1.plot(df.index.values, df['Deaths'], 'ro')
+    line1, = ax1.plot(xnew, splineDeaths, 'r-')
+    plt.xticks(np.arange(1999, 2010, 1))
+    ax1.set_ylabel('Swimming pool drownings')
+    ax1.set_ylim(80, 140)
+    ax1.set_yticks(np.arange(80, 140, 20))
+    ax1.yaxis.grid(True)
+
+    tempax = ax1.twiny()  # tempx to obtain second x axis on top
+    ax2 = ax1.twinx()  # actual axis on which to plot Movie count on
+
+    ax2.plot(df.index.values, df['Movie Count'], 'ko')
+    line2, = ax2.plot(xnew, splineMovies, 'k-')
+    ax2.set_yticks(np.arange(0, 6, 2))
+    ax2.set_ylim(0, 6)
+    ax2.set_ylabel('Nicholas Cage', rotation=-90, labelpad=12)
+    ax2.legend((line1, line2), ('Swimming pool drownings', 'Nicholas Cage'))
+
+    tempax.set_xticks(ax1.get_xticks())
+    tempax.set_xbound(ax1.get_xbound())
+
+    plt.tight_layout()
     plt.savefig('task2/task21.png')
+    plt.show()
 
     return
 
