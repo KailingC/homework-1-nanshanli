@@ -1,1 +1,0 @@
-https://api.travis-ci.com/v3/job/174881985/log.txt?log.token=VdZ_SGyHQ96uh_lgHCMspg
