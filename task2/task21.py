@@ -78,7 +78,7 @@ def main():
               fontsize=12)
 
     ax1 = plt.gca()
-    ax1.plot(df.index.values, df['Deaths'], 'ro')
+    marker1, = ax1.plot(df.index.values, df['Deaths'], 'ro')
     line1, = ax1.plot(xnew, splineDeaths, 'r-')
     plt.xticks(np.arange(1999, 2010, 1))
     ax1.set_ylabel('Swimming pool drownings')
@@ -89,12 +89,13 @@ def main():
     tempax = ax1.twiny()  # tempx to obtain second x axis on top
     ax2 = ax1.twinx()  # actual axis on which to plot Movie count on
 
-    ax2.plot(df.index.values, df['Movie Count'], 'ko')
+    marker2, = ax2.plot(df.index.values, df['Movie Count'], 'ko')
     line2, = ax2.plot(xnew, splineMovies, 'k-')
     ax2.set_yticks(np.arange(0, 6, 2))
     ax2.set_ylim(0, 6)
     ax2.set_ylabel('Nicholas Cage', rotation=-90, labelpad=12)
-    ax2.legend((line1, line2), ('Swimming pool drownings', 'Nicholas Cage'))
+    ax2.legend([(line1, marker1), (line2, marker2)],
+               ['Swimming pool drownings', 'Nicholas Cage'])
 
     tempax.set_xticks(ax1.get_xticks())
     tempax.set_xbound(ax1.get_xbound())
