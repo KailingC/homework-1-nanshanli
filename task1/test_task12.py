@@ -7,7 +7,7 @@ Tests for fib function within fib.py
 
 """
 
-from task1.task12 import fib
+from task12 import fib
 
 
 def test_two():
