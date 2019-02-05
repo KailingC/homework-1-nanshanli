@@ -10,7 +10,7 @@ sum of the '2010' column.
 
 import pandas as pd
 
-df = pd.read_csv('task1/input.txt', sep=',')
+df = pd.read_csv('task1/input.txt', sep=',', escapechar='\\', index_col=0)
 df['2010'] = pd.to_numeric(df['2010'], errors='coerce')
 
 
@@ -21,7 +21,7 @@ def test_row():
 
 def test_column():
     """Check column number in df."""
-    assert len(df.columns) == 32
+    assert len(df.columns) == 31
 
 
 def test_population():
