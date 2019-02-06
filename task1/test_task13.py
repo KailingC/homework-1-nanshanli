@@ -10,7 +10,8 @@ sum of the '2010' column.
 
 import pandas as pd
 
-df = pd.read_csv('task1/input.txt', sep=',', escapechar='\\', index_col=0)
+df = pd.read_csv('task1/input.txt', sep=',', escapechar='\\',
+                 index_col=0, encoding="utf-16")
 df['2010'] = pd.to_numeric(df['2010'], errors='coerce')
 
 

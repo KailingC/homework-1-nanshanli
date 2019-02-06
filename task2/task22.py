@@ -40,6 +40,8 @@ def generatePairPlots(data, col, columns):
             if i == 0:
                 ax[j, i].set_ylabel(columns[j], {'size': 8})
                 ax[j, i].tick_params(axis='y', labelsize=8)
+            elif (i == 1 and j == 0):
+                pass
             else:
                 ax[j, i].set_yticklabels([])
                 ax[j, i].set_yticks([])
@@ -52,7 +54,8 @@ def generatePairPlots(data, col, columns):
     plt.subplots_adjust(wspace=0, hspace=0)
     fig.suptitle('Pair plot of iris dataset', x=0.55)
     handles, labels = ax[1, 2].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="lower center", bbox_to_anchor=(0.2, 0.85))
+    fig.legend(handles, labels, loc="lower center", bbox_to_anchor=(0.2, 0.9),
+               prop={'size': 6})
     plt.savefig('task2/task22.png')
     plt.show()
 
